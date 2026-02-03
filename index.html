@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ================= LOGIN PAGE ================= -->
+<div class="login-wrapper glass" id="loginPage">
+
+  <!-- LEFT -->
+  <div class="illustration">
+    <img src="1.jpg" alt="Student Illustration">
+    <p>Smart insights for smarter learning.</p>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="login-box">
+    <h2>Student AI</h2>
+    <span class="subtitle">Log in to continue</span>
+
+    <div class="input-group">
+      <input type="text" id="username" required placeholder=" ">
+      <label>Username</label>
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="password" required placeholder=" ">
+      <label>Password</label>
+      <span class="toggle" onclick="togglePassword()">👁️</span>
+    </div>
+
+    <div class="options">
+      <label><input type="checkbox"> Remember me</label>
+      <a href="#">Forgot password?</a>
+    </div>
+
+    <button class="login-btn" onclick="validateLogin()">Log In</button>
+    <p id="msg"></p>
+
+    <div class="divider"><span>or</span></div>
+
+    <button class="google-btn" onclick="googleLogin()">
+      <img src="https://www.svgrepo.com/show/475656/google-color.svg">
+      Continue with Google
+    </button>
+
+    <p class="hint">AI-powered student behavioral insights</p>
+  </div>
+</div>
+
+<!-- ================= ANALYSIS PAGE ================= -->
+<div class="dashboard" id="analysisPage" style="display:none;">
+
+  <div class="top-bar">
+    <h2>Student Behavioral Analysis</h2>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="card">
+    <input type="number" id="att" placeholder="Attendance (%)">
+    <input type="number" id="asg" placeholder="Assignment (%)">
+    <input type="number" id="test" placeholder="Test Score">
+    <input type="number" id="part" placeholder="Participation (1–10)">
+
+    <button onclick="predict()">Predict Performance</button>
+
+    <h3 id="result"></h3>
+
+    <button onclick="generatePDF()">Download Report</button>
+  </div>
+
+</div>
+
+<!-- JS -->
+<script src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>
