@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ================= LOGIN PAGE ================= -->
+<div class="login-wrapper glass" id="loginPage">
+
+  <!-- LEFT -->
+  <div class="illustration">
+    <img src="1.jpg" alt="Student Illustration">
+    <p>Smart insights for smarter learning.</p>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="login-box">
+    <h2>Student AI</h2>
+    <span class="subtitle">Log in to continue</span>
+
+    <div class="input-group">
+      <input type="text" id="username" required placeholder=" ">
+      <label>Username</label>
+    </div>
+
+    <div class="input-group">
+      <input type="password" id="password" required placeholder=" ">
+      <label>Password</label>
+      <span class="toggle" onclick="togglePassword()">👁️</span>
+    </div>
+
+    <div class="options">
+      <label><input type="checkbox"> Remember me</label>
+      <a href="#">Forgot password?</a>
+    </div>
+
+    <button class="login-btn" onclick="validateLogin()">Log In</button>
+
+    <p id="msg"></p>
+
+    <!-- REGISTER BUTTON -->
+    <div class="divider"><span>New here?</span></div>
+
+    <button class="login-btn" onclick="window.location.href='register.html'">
+      Register Now
+    </button>
+
+    <div class="divider"><span>or</span></div>
+
+    <button class="google-btn" onclick="googleLogin()">
+      <img src="https://www.svgrepo.com/show/475656/google-color.svg">
+      Continue with Google
+    </button>
+
+    <p class="hint">AI-powered student behavioral insights</p>
+  </div>
+</div>
+
+<!-- ================= DASHBOARD PAGE ================= -->
+<div class="dashboard" id="analysisPage" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2 class="logo">STUDENT AI</h2>
+
+    <ul class="menu">
+      <li id="dashMenu" class="active">📊 Dashboard</li>
+      <li id="docMenu" onclick="openDocuments()">📄 Documents</li>
+      <li>📚 E-Resources</li>
+      <li>🏆 Leaderboard</li>
+      <li>📂 Portfolio</li>
+      <li>❓ Help</li>
+    </ul>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div>
+        <h2>Student Behavioral Analysis</h2>
+        <span class="sub">AI-based Performance Insights</span>
+      </div>
+
+      <div class="top-actions">
+        <span class="user">👤 Student</span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <!-- METRIC CARDS -->
+    <section class="cards">
+      <div class="student-card">
+        <h4>Attendance</h4>
+        <p id="attVal">--%</p>
+      </div>
+
+      <div class="student-card">
+        <h4>Assignments</h4>
+        <p id="asgVal">--%</p>
+      </div>
+
+      <div class="student-card">
+        <h4>Test Score</h4>
+        <p id="testVal">--</p>
+      </div>
+
+      <div class="student-card">
+        <h4>Performance</h4>
+        <p id="result">--</p>
+      </div>
+    </section>
+
+    <!-- INPUT + ANALYSIS -->
+    <section class="analysis-box">
+      <h3>Enter Student Data</h3>
+
+      <div class="inputs">
+        <input type="number" id="att" placeholder="Attendance (%)">
+        <input type="number" id="asg" placeholder="Assignment (%)">
+        <input type="number" id="test" placeholder="Test Score">
+        <input type="number" id="part" placeholder="Participation (1–10)">
+      </div>
+
+      <div class="actions">
+        <button onclick="predict()">Predict Performance</button>
+        <button onclick="generatePDF()">Download Report</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ================= DOCUMENTS PAGE ================= -->
+<div class="dashboard documents-page" id="documentsPage" style="display:none;">
+
+  <aside class="sidebar">
+    <h2 class="logo">STUDENT AI</h2>
+
+    <ul class="menu">
+      <li onclick="backToDashboard()">📊 Dashboard</li>
+      <li class="active">📄 Documents</li>
+      <li>📚 E-Resources</li>
+      <li>🏆 Leaderboard</li>
+      <li>📂 Portfolio</li>
+      <li>❓ Help</li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+
+    <div class="top-bar">
+      <h2>📄 Student Documents</h2>
+      <button class="logout-btn" onclick="backToDashboard()">⬅ Back</button>
+    </div>
+
+    <section class="cards">
+
+      <div class="student-card">
+        <h4>Student Details</h4>
+        <p><strong>Name:</strong> Student</p>
+        <p><strong>Roll No:</strong> CS-101</p>
+      </div>
+
+      <div class="student-card">
+        <h4>Upload Document</h4>
+        <input type="file" id="docUpload">
+        <br><br>
+        <button onclick="uploadDocument()">Upload</button>
+      </div>
+
+      <div class="student-card">
+        <h4>Uploaded Documents</h4>
+        <ul id="docList">
+          <li class="empty-doc">
+            📂 No documents yet<br>
+            <small>Upload assignments, reports or certificates</small>
+          </li>
+        </ul>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</body>
+</html>
