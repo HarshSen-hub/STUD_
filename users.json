@@ -1,0 +1,26 @@
+[
+    {
+        "username": "teacher",
+        "password": "teacher123",
+        "email": "teacher@insightx.com",
+        "role": "teacher"
+    },
+    {
+        "username": "Harsh194",
+        "password": "123456",
+        "email": "",
+        "role": "student"
+    },
+    {
+        "username": "Sahil193",
+        "password": "sahil1234",
+        "email": "",
+        "role": "student"
+    },
+    {
+        "username": "Sachin2005",
+        "password": "12345",
+        "email": "",
+        "role": "student"
+    }
+]

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>InsightX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    #loader{display:none;position:fixed;inset:0;background:rgba(2,6,23,.85);z-index:9999;justify-content:center;align-items:center;flex-direction:column;gap:14px;}
+    .spinner{width:46px;height:46px;border:4px solid #1e293b;border-top-color:#38bdf8;border-radius:50%;animation:spin .8s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    #loader p{color:#94a3b8;font-size:13px;font-family:'Outfit',sans-serif;}
+    .role-tabs{display:flex;gap:8px;margin-bottom:18px;}
+    .role-tab{flex:1;padding:10px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--text-secondary);cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;transition:all .2s;text-align:center;}
+    .role-tab.active{background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.35);color:var(--cyan);}
+    .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
+    .stat-box{background:#020617;border:1px solid #1e293b;border-radius:14px;padding:20px;text-align:center;transition:transform .2s;}
+    .stat-box:hover{transform:translateY(-3px);}
+    .stat-box .val{font-size:26px;font-weight:700;margin:8px 0 4px;}
+    .stat-box .lbl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px;}
+    .student-hero{background:linear-gradient(135deg,#020617,#0f172a);border-radius:20px;padding:30px;margin-bottom:22px;border:1px solid #1e293b;position:relative;overflow:hidden;}
+    .student-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(56,189,248,.07) 0%,transparent 65%);}
+    .student-hero h1{font-size:26px;margin:0 0 6px;color:#f1f5f9;}
+    .student-hero p{color:#64748b;margin:0;font-size:14px;}
+    .category-badge{display:inline-block;padding:6px 18px;border-radius:999px;font-size:13px;font-weight:700;margin-top:14px;letter-spacing:.5px;}
+    .badge-strong{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3);}
+    .badge-average{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);}
+    .badge-weak{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);}
+    .badge-unknown{background:rgba(100,116,139,.15);color:#94a3b8;border:1px solid rgba(100,116,139,.3);}
+    .notice-bar{background:rgba(56,189,248,.06);border:1px solid rgba(56,189,248,.15);border-radius:12px;padding:14px 20px;margin-bottom:18px;display:flex;align-items:center;gap:12px;font-size:13px;color:#94a3b8;}
+    .notice-dot{width:8px;height:8px;border-radius:50%;background:#38bdf8;box-shadow:0 0 8px #38bdf8;flex-shrink:0;animation:blink 2s infinite;}
+    .leaderboard{list-style:none;padding:0;margin:0;}
+    .leaderboard li{display:flex;align-items:center;gap:14px;padding:11px 14px;border-radius:10px;margin-bottom:7px;background:#0f172a;font-size:13px;border:1px solid #1e293b;transition:background .2s;}
+    .leaderboard li:hover{background:#1e293b;}
+    .lb-rank{font-family:'Space Mono',monospace;font-size:11px;color:#64748b;width:26px;}
+    .lb-name{flex:1;font-weight:500;color:#e2e8f0;}
+    .lb-score{font-family:'Space Mono',monospace;font-size:13px;}
+    .lb-cat{font-size:10px;padding:3px 10px;border-radius:999px;font-weight:600;}
+    .announce-panel{background:#020617;border:1px solid #1e293b;border-radius:16px;padding:24px;margin-top:20px;}
+    .announce-panel textarea{width:100%;min-height:90px;background:#0f172a;border:1px solid #1e293b;border-radius:10px;color:#e2e8f0;padding:14px;font-family:'Outfit',sans-serif;font-size:13px;resize:vertical;outline:none;box-sizing:border-box;}
+    .announce-panel textarea:focus{border-color:rgba(0,212,255,.3);}
+    .resource-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;}
+    .resource-card{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;text-decoration:none;display:block;}
+    .resource-card:hover{border-color:rgba(56,189,248,.3);background:#1e293b;}
+    .resource-card h4{margin:0 0 6px;font-size:13px;color:#e2e8f0;}
+    .resource-card p{margin:0;font-size:11px;color:#64748b;}
+    .tips-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:12px;}
+    .tip-card{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:18px;}
+    .tip-card h4{margin:0 0 8px;font-size:13px;color:#38bdf8;}
+    .tip-card p{margin:0;font-size:12px;color:#64748b;line-height:1.6;}
+    .section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+    .section-hd h3{margin:0;}
+    .main-content{overflow-y:auto;}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+    @media(max-width:900px){.stat-row{grid-template-columns:repeat(2,1fr);}.tips-grid,.resource-grid,.two-col{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN / REGISTER -->
+<div class="flip-container" id="authSection">
+  <div class="flip-card" id="flipCard">
+    <div class="front">
+      <div class="login-wrapper glass">
+        <div class="illustration">
+          <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+          <div class="illus-tag"><span class="illus-tag-dot"></span>Live · AI ready</div>
+          <img src="1.jpg" alt="InsightX">
+          <div class="illus-bottom">
+            <div class="illus-logo"><span class="illus-logo-dot"></span>InsightX</div>
+            <p class="illus-tagline">Smart insights for smarter learning</p>
+            <div class="illus-stats">
+              <div class="illus-stat"><span class="illus-stat-num">98%</span><span class="illus-stat-label">Accuracy</span></div>
+              <div class="illus-stat"><span class="illus-stat-num">ML</span><span class="illus-stat-label">Powered</span></div>
+              <div class="illus-stat"><span class="illus-stat-num">2-in-1</span><span class="illus-stat-label">Portal</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="login-box">
+          <div class="ai-badge"><span class="ai-badge-dot"></span>Sign in</div>
+          <h2>Welcome back</h2>
+          <span class="subtitle">Select your role and sign in</span>
+          <div class="role-tabs">
+            <button class="role-tab active" id="loginRoleTeacher" onclick="setLoginRole('teacher')">👩‍🏫 Teacher</button>
+            <button class="role-tab" id="loginRoleStudent" onclick="setLoginRole('student')">🎓 Student</button>
+          </div>
+          <div class="input-group"><input type="text" id="username" placeholder=" "><label>Username</label></div>
+          <div class="input-group"><input type="password" id="password" placeholder=" "><label>Password</label><span class="toggle" onclick="togglePwd()">👁️</span></div>
+          <button class="login-btn" onclick="validateLogin()">Log In</button>
+          <p id="msg"></p>
+          <div class="divider"><span>or</span></div>
+          <button class="login-btn secondary" onclick="flipCard()">Create an account</button>
+        </div>
+      </div>
+    </div>
+    <div class="back">
+      <div class="login-wrapper glass">
+        <div class="illustration">
+          <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+          <div class="illus-tag"><span class="illus-tag-dot"></span>Join · Free</div>
+          <img src="1.jpg" alt="InsightX">
+          <div class="illus-bottom">
+            <div class="illus-logo"><span class="illus-logo-dot"></span>InsightX</div>
+            <p class="illus-tagline">Join thousands of educators today</p>
+            <div class="illus-stats">
+              <div class="illus-stat"><span class="illus-stat-num">Free</span><span class="illus-stat-label">Always</span></div>
+              <div class="illus-stat"><span class="illus-stat-num">&lt;30s</span><span class="illus-stat-label">Setup</span></div>
+              <div class="illus-stat"><span class="illus-stat-num">AI</span><span class="illus-stat-label">Powered</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="login-box">
+          <div class="ai-badge"><span class="ai-badge-dot"></span>Register</div>
+          <h2>Get started</h2>
+          <span class="subtitle">Create your account</span>
+          <div class="role-tabs">
+            <button class="role-tab active" id="regRoleTeacher" onclick="setRegRole('teacher')">👩‍🏫 Teacher</button>
+            <button class="role-tab" id="regRoleStudent" onclick="setRegRole('student')">🎓 Student</button>
+          </div>
+          <div class="input-group"><input type="text" id="regUser" placeholder=" "><label>Username</label></div>
+          <div class="input-group"><input type="email" id="regEmail" placeholder=" "><label>Email address</label></div>
+          <div class="input-group"><input type="password" id="regPass" placeholder=" "><label>Password</label></div>
+          <button class="login-btn" onclick="registerUser()">Create Account</button>
+          <p id="regMsg"></p>
+          <div class="divider"><span>or</span></div>
+          <button class="login-btn secondary" onclick="flipCard()">Back to Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEACHER DASHBOARD -->
+<div class="dashboard" id="teacherDash" style="display:none;">
+  <aside class="sidebar">
+    <h2 class="logo">InsightX</h2>
+    <p style="font-size:11px;color:#475569;margin-top:-8px;margin-bottom:20px;">Teacher Portal</p>
+    <ul class="menu">
+      <li class="active" onclick="tNav('tHome',this)">🏠 Dashboard</li>
+      <li onclick="tNav('tInsights',this)">🧠 AI Insights</li>
+      <li onclick="tNav('tProgress',this)">📈 Progress</li>
+      <li onclick="tNav('tAnnounce',this)">📢 Announce</li>
+    </ul>
+    <div style="margin-top:auto;padding-top:20px;border-top:1px solid #1e293b;">
+      <div style="font-size:11px;color:#475569;margin-bottom:4px;letter-spacing:.5px;">Signed in as</div>
+      <div style="font-size:13px;color:#94a3b8;font-weight:600;margin-bottom:12px;" id="tNameLabel">—</div>
+      <button class="logout-btn" onclick="logout()">→ Logout</button>
+    </div>
+  </aside>
+  <main class="main-content" style="padding:28px;">
+
+    <!-- TEACHER HOME -->
+    <div id="tHome">
+      <div class="top-bar">
+        <div><h2 id="tWelcome" style="margin:0;color:#f1f5f9;"></h2>
+             <p style="margin:4px 0 0;color:#64748b;font-size:13px;">Class overview</p></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="lbl">Total Students</div><div class="val" id="tTotal" style="color:#38bdf8;">—</div></div>
+        <div class="stat-box"><div class="lbl">Strong</div><div class="val" id="tStrong" style="color:#22c55e;">—</div></div>
+        <div class="stat-box"><div class="lbl">Average</div><div class="val" id="tAvg" style="color:#3b82f6;">—</div></div>
+        <div class="stat-box"><div class="lbl">At Risk</div><div class="val" id="tWeak" style="color:#ef4444;">—</div></div>
+      </div>
+      <div class="two-col">
+        <div class="analysis-box">
+          <div class="section-hd"><h3>📊 Class Averages</h3></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="stat-box"><div class="lbl">Attendance</div><div class="val" id="avgAtt" style="color:#38bdf8;font-size:20px;">—</div></div>
+            <div class="stat-box"><div class="lbl">Assignment</div><div class="val" id="avgAsg" style="color:#a855f7;font-size:20px;">—</div></div>
+            <div class="stat-box"><div class="lbl">Test Score</div><div class="val" id="avgTest" style="color:#22c55e;font-size:20px;">—</div></div>
+            <div class="stat-box"><div class="lbl">Participation</div><div class="val" id="avgPart" style="color:#f97316;font-size:20px;">—</div></div>
+          </div>
+        </div>
+        <div class="analysis-box">
+          <div class="section-hd"><h3>⚠️ At-Risk Students</h3></div>
+          <ul id="tWeakList" class="leaderboard" style="max-height:200px;overflow-y:auto;">
+            <li style="color:#475569;font-size:13px;">Upload CSV to see results</li>
+          </ul>
+        </div>
+      </div>
+      <div class="analysis-box" style="margin-top:20px;">
+        <div class="section-hd"><h3>🏆 Class Leaderboard</h3><span style="font-size:12px;color:#475569;">Top by test score</span></div>
+        <ul id="tLeaderboard" class="leaderboard"><li style="color:#475569;font-size:13px;">Upload CSV to populate</li></ul>
+      </div>
+    </div>
+
+    <!-- TEACHER AI INSIGHTS -->
+    <div id="tInsights" style="display:none;">
+      <div class="top-bar"><h2 style="margin:0;color:#f1f5f9;">🧠 AI Insights</h2></div>
+      <div class="analysis-box">
+        <h3>📂 Upload Class CSV</h3>
+        <p style="color:#64748b;font-size:13px;margin:0 0 14px;">Required: Student_ID, Attendance_Percentage, Assignment_Submission_Rate, Average_Test_Score, Participation_Score</p>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <input type="file" id="csvFile" class="file-input" accept=".csv">
+          <button class="primary-btn" onclick="uploadCSV()">Analyze Class</button>
+        </div>
+        <p id="status" style="margin-top:12px;font-size:13px;color:#94a3b8;"></p>
+      </div>
+      <div id="mlStats" style="display:none;" class="analysis-box">
+        <h3>🤖 ML Results</h3>
+        <div style="display:flex;gap:28px;flex-wrap:wrap;margin-top:12px;">
+          <div><p style="color:#64748b;font-size:11px;margin:0;text-transform:uppercase;letter-spacing:1px;">Algorithm</p><p style="color:#e2e8f0;font-weight:600;margin:4px 0;">K-Means (k=3) + Decision Tree</p></div>
+          <div><p style="color:#64748b;font-size:11px;margin:0;text-transform:uppercase;letter-spacing:1px;">Silhouette</p><p style="font-weight:700;margin:4px 0;font-size:22px;" id="silVal">—</p></div>
+          <div><p style="color:#64748b;font-size:11px;margin:0;text-transform:uppercase;letter-spacing:1px;">Accuracy</p><p style="font-weight:700;margin:4px 0;font-size:22px;" id="accVal">—</p></div>
+          <div><p style="color:#64748b;font-size:11px;margin:0;text-transform:uppercase;letter-spacing:1px;">Students</p><p style="color:#e2e8f0;font-weight:700;margin:4px 0;font-size:22px;" id="totalVal">—</p></div>
+        </div>
+      </div>
+      <div class="two-col" style="margin-top:20px;">
+        <div class="analysis-box"><h3>📊 Distribution</h3><canvas id="classChart" style="max-height:280px;"></canvas></div>
+        <div class="analysis-box"><h3>📈 Cluster Profile</h3><canvas id="clusterChart" style="max-height:280px;"></canvas></div>
+      </div>
+      <!-- Predict single -->
+      <div class="analysis-box" style="margin-top:20px;">
+        <h3>🎯 Predict Single Student</h3>
+        <p style="color:#64748b;font-size:13px;margin:0 0 14px;">Enter scores manually to get an instant ML prediction.</p>
+        <div class="inputs">
+          <input type="number" id="att" placeholder="Attendance (%)" min="0" max="100">
+          <input type="number" id="asg" placeholder="Assignment (%)" min="0" max="100">
+          <input type="number" id="test" placeholder="Test Score (0-100)" min="0" max="100">
+          <input type="number" id="part" placeholder="Participation (1-10)" min="1" max="10">
+        </div>
+        <button class="primary-btn" onclick="predict()">Predict</button>
+        <div id="predictResult" style="display:none;margin-top:16px;padding:16px;background:#0f172a;border-radius:12px;border:1px solid #1e293b;">
+          <div style="font-size:12px;color:#64748b;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Result</div>
+          <div style="font-size:24px;font-weight:700;" id="predictLabel">—</div>
+          <div style="font-size:12px;color:#64748b;margin-top:4px;" id="predictAvg"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEACHER PROGRESS -->
+    <div id="tProgress" style="display:none;">
+      <div class="top-bar"><h2 style="margin:0;color:#f1f5f9;">📈 Student Progress</h2></div>
+      <div class="analysis-box">
+        <h3>Track a Student</h3>
+        <p style="color:#64748b;font-size:13px;margin:0 0 14px;">Upload CSV first to populate the dropdown.</p>
+        <select id="studentSelect" style="margin-bottom:14px;width:280px;padding:11px;border-radius:8px;background:#0f172a;color:#e5e7eb;border:1px solid #1e293b;">
+          <option value="">Select Student</option>
+        </select>
+        <p id="progressStudentCategory" style="color:#38bdf8;font-size:13px;margin:0 0 14px;"></p>
+        <div class="inputs">
+          <input type="number" id="math" placeholder="Math (0-100)">
+          <input type="number" id="dbms" placeholder="DBMS (0-100)">
+          <input type="number" id="os" placeholder="OS (0-100)">
+        </div>
+        <button class="primary-btn" onclick="saveProgress()">Save & Chart</button>
+      </div>
+      <div class="analysis-box" style="margin-top:20px;"><h3>📊 Progress Chart</h3><canvas id="progressChart"></canvas></div>
+    </div>
+
+    <!-- TEACHER ANNOUNCE -->
+    <div id="tAnnounce" style="display:none;">
+      <div class="top-bar"><h2 style="margin:0;color:#f1f5f9;">📢 Announcements</h2></div>
+      <div class="announce-panel">
+        <h3 style="margin:0 0 12px;">Post to Students</h3>
+        <p style="color:#64748b;font-size:13px;margin:0 0 12px;">Students see this when they log in.</p>
+        <textarea id="announceText" placeholder="Write your announcement here…"></textarea>
+        <div style="display:flex;gap:12px;margin-top:12px;">
+          <button class="primary-btn" onclick="postAnnouncement()">📢 Post</button>
+          <button class="primary-btn" style="background:linear-gradient(135deg,#dc2626,#991b1b);" onclick="clearAnnouncement()">Clear</button>
+        </div>
+        <p id="announceMsg" style="font-size:13px;margin-top:10px;"></p>
+      </div>
+      <div class="announce-panel">
+        <h3 style="margin:0 0 12px;">📋 Current Announcement</h3>
+        <div id="currentAnnounce" style="color:#64748b;font-size:13px;line-height:1.6;">No announcement posted yet.</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- STUDENT DASHBOARD -->
+<div class="dashboard" id="studentDash" style="display:none;">
+  <aside class="sidebar">
+    <h2 class="logo">InsightX</h2>
+    <p style="font-size:11px;color:#475569;margin-top:-8px;margin-bottom:20px;">Student Portal</p>
+    <ul class="menu">
+      <li class="active" onclick="sNav('sHome',this)">🏠 My Dashboard</li>
+      <li onclick="sNav('sProgress',this)">📈 My Progress</li>
+      <li onclick="sNav('sResources',this)">📚 Resources</li>
+    </ul>
+    <div style="margin-top:auto;padding-top:20px;border-top:1px solid #1e293b;">
+      <div style="font-size:11px;color:#475569;margin-bottom:4px;letter-spacing:.5px;">Signed in as</div>
+      <div style="font-size:13px;color:#94a3b8;font-weight:600;margin-bottom:12px;" id="sNameLabel">—</div>
+      <button class="logout-btn" onclick="logout()">→ Logout</button>
+    </div>
+  </aside>
+  <main class="main-content" style="padding:28px;">
+
+    <!-- STUDENT HOME -->
+    <div id="sHome">
+      <div class="notice-bar" id="sNoticeBanner" style="display:none;">
+        <div class="notice-dot"></div>
+        <div><strong style="color:#38bdf8;">Teacher:</strong><span id="sNoticeText" style="margin-left:8px;"></span></div>
+      </div>
+      <div class="student-hero">
+        <p style="color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;margin:0 0 6px;">Your Performance</p>
+        <h1 id="sWelcome">Welcome!</h1>
+        <p id="sSubtitle" style="color:#64748b;">Your results will appear once your teacher publishes class data.</p>
+        <div id="sCatBadge"></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="lbl">Attendance</div><div class="val" id="sAtt" style="color:#38bdf8;">—</div><div style="font-size:11px;color:#475569;">%</div></div>
+        <div class="stat-box"><div class="lbl">Assignment</div><div class="val" id="sAsg" style="color:#a855f7;">—</div><div style="font-size:11px;color:#475569;">%</div></div>
+        <div class="stat-box"><div class="lbl">Test Score</div><div class="val" id="sTest" style="color:#22c55e;">—</div><div style="font-size:11px;color:#475569;">/ 100</div></div>
+        <div class="stat-box"><div class="lbl">Participation</div><div class="val" id="sPart" style="color:#f97316;">—</div><div style="font-size:11px;color:#475569;">/ 10</div></div>
+      </div>
+      <div class="two-col">
+        <div class="analysis-box"><h3>📊 You vs Class Average</h3><canvas id="sCompareChart" style="max-height:250px;"></canvas></div>
+        <div class="analysis-box">
+          <div class="section-hd"><h3>🏆 Class Leaderboard</h3></div>
+          <ul id="sLeaderboard" class="leaderboard" style="max-height:240px;overflow-y:auto;"><li style="color:#475569;font-size:13px;">Not published yet</li></ul>
+        </div>
+      </div>
+      <div class="analysis-box" style="margin-top:20px;">
+        <h3>💡 Tips for You</h3>
+        <div class="tips-grid">
+          <div class="tip-card"><h4>📅 Attendance</h4><p>Aim for 85%+. Consistent presence is the single biggest factor in your final grade.</p></div>
+          <div class="tip-card"><h4>📝 Assignments</h4><p>Submit all assignments on time — they contribute heavily to your overall score.</p></div>
+          <div class="tip-card"><h4>🧪 Test Prep</h4><p>Review notes weekly. Spaced repetition is far more effective than last-minute cramming.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STUDENT PROGRESS -->
+    <div id="sProgress" style="display:none;">
+      <div class="top-bar"><h2 style="margin:0;color:#f1f5f9;">📈 My Progress</h2></div>
+      <div class="analysis-box">
+        <h3>Enter Your Subject Scores</h3>
+        <p style="color:#64748b;font-size:13px;margin:0 0 14px;">Track how you're doing across all subjects.</p>
+        <div class="inputs">
+          <input type="number" id="sMath" placeholder="Math (0-100)">
+          <input type="number" id="sDbms" placeholder="DBMS (0-100)">
+          <input type="number" id="sOs" placeholder="OS (0-100)">
+          <input type="number" id="sNet" placeholder="Networking (0-100)">
+        </div>
+        <button class="primary-btn" onclick="saveStudentProgress()">Save & Chart</button>
+      </div>
+      <div class="analysis-box" style="margin-top:20px;"><h3>📊 Subject Scores</h3><canvas id="sProgressChart"></canvas></div>
+    </div>
+
+    <!-- STUDENT RESOURCES -->
+    <div id="sResources" style="display:none;">
+      <div class="top-bar"><h2 style="margin:0;color:#f1f5f9;">📚 Study Resources</h2></div>
+      <div class="analysis-box">
+        <h3>Recommended Platforms</h3>
+        <div class="resource-grid">
+          <a class="resource-card" href="https://www.khanacademy.org" target="_blank"><h4>🎓 Khan Academy</h4><p>Free courses on math, science, and computing</p></a>
+          <a class="resource-card" href="https://www.geeksforgeeks.org" target="_blank"><h4>💻 GeeksForGeeks</h4><p>CS concepts, DSA, and interview prep</p></a>
+          <a class="resource-card" href="https://nptel.ac.in" target="_blank"><h4>🇮🇳 NPTEL</h4><p>IIT/IISc lecture series for engineering</p></a>
+          <a class="resource-card" href="https://www.coursera.org" target="_blank"><h4>📖 Coursera</h4><p>University-level courses and certifications</p></a>
+          <a class="resource-card" href="https://leetcode.com" target="_blank"><h4>🧩 LeetCode</h4><p>Coding problems and placement prep</p></a>
+          <a class="resource-card" href="https://www.youtube.com/results?search_query=bca+btec+lectures" target="_blank"><h4>▶️ YouTube Lectures</h4><p>BCA/BTech video tutorials</p></a>
+        </div>
+      </div>
+      <div class="analysis-box" style="margin-top:20px;">
+        <h3>📋 Tips by Your Category</h3>
+        <div class="tips-grid">
+          <div class="tip-card"><h4>🔴 If you're Weak</h4><p>Focus on attendance first. Submit all assignments and solve 2 practice problems daily.</p></div>
+          <div class="tip-card"><h4>🔵 If you're Average</h4><p>You're close! Pick 1 weak subject, dedicate 30 mins daily, and take weekly mock tests.</p></div>
+          <div class="tip-card"><h4>🟢 If you're Strong</h4><p>Help peers, explore advanced topics, and start building projects for your portfolio.</p></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="loader"><div class="spinner"></div><p id="loaderMsg">Processing…</p></div>
+
+<script>
+const BASE_URL="http://127.0.0.1:5001";
+let loginRole="teacher", regRole="teacher";
+let globalStudents=[],globalStudentsDetail=[],globalClassAvg={};
+let classChart,clusterChart,progressChart,sCompareChart,sProgressChart;
+
+// ── Role tabs ─────────────────────────────────────────────────
+function setLoginRole(r){loginRole=r;document.getElementById("loginRoleTeacher").classList.toggle("active",r==="teacher");document.getElementById("loginRoleStudent").classList.toggle("active",r==="student");}
+function setRegRole(r){regRole=r;document.getElementById("regRoleTeacher").classList.toggle("active",r==="teacher");document.getElementById("regRoleStudent").classList.toggle("active",r==="student");}
+
+// ── Auth ──────────────────────────────────────────────────────
+function validateLogin(){
+  const user=document.getElementById("username").value.trim();
+  const pass=document.getElementById("password").value.trim();
+  const msg=document.getElementById("msg");
+  const btn=document.querySelector(".front .login-btn");
+  msg.textContent="";
+  if(!user||!pass){msg.textContent="Fill all fields";msg.style.color="#facc15";return;}
+  msg.textContent="Authenticating…";msg.style.color="#38bdf8";
+  btn.disabled=true;btn.innerText="Please wait…";
+  fetch(`${BASE_URL}/login`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:user,password:pass})})
+  .then(r=>r.json()).then(data=>{
+    btn.disabled=false;btn.innerText="Log In";
+    if(data.success){
+      if(data.role!==loginRole){msg.textContent=`This is a ${data.role} account — select the correct role.`;msg.style.color="#facc15";return;}
+      sessionStorage.setItem("isLoggedIn","true");
+      sessionStorage.setItem("username",data.username);
+      sessionStorage.setItem("role",data.role);
+      msg.textContent="✅ Login successful";msg.style.color="#22c55e";
+      setTimeout(()=>data.role==="teacher"?showTeacher():showStudent(),600);
+    } else {msg.textContent=data.message||"Invalid credentials";msg.style.color="#ef4444";}
+  }).catch(()=>{btn.disabled=false;btn.innerText="Log In";msg.textContent="⚠️ Server not running — start app.py";msg.style.color="#facc15";});
+}
+
+function registerUser(){
+  const u=document.getElementById("regUser").value.trim();
+  const e=document.getElementById("regEmail").value.trim();
+  const p=document.getElementById("regPass").value.trim();
+  const msg=document.getElementById("regMsg");
+  if(!u||!e||!p){msg.textContent="Fill all fields";msg.style.color="#facc15";return;}
+  fetch(`${BASE_URL}/register`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u,email:e,password:p,role:regRole})})
+  .then(r=>r.json()).then(data=>{
+    if(data.success){msg.textContent=data.message;msg.style.color="#22c55e";
+      document.getElementById("regUser").value="";document.getElementById("regEmail").value="";document.getElementById("regPass").value="";
+      setTimeout(()=>flipCard(),1200);
+    } else {msg.textContent=data.message||"Failed";msg.style.color="#ef4444";}
+  }).catch(()=>{msg.textContent="⚠️ Server error";msg.style.color="#facc15";});
+}
+
+function logout(){sessionStorage.clear();location.reload();}
+function togglePwd(){const p=document.getElementById("password");p.type=p.type==="password"?"text":"password";}
+function flipCard(){document.getElementById("flipCard").classList.toggle("flipped");}
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&!document.getElementById("flipCard").classList.contains("flipped"))validateLogin();});
+
+// ── Show dashboards ───────────────────────────────────────────
+function showTeacher(){
+  document.getElementById("authSection").style.display="none";
+  document.getElementById("teacherDash").style.display="flex";
+  const n=sessionStorage.getItem("username");
+  document.getElementById("tNameLabel").textContent=n;
+  document.getElementById("tWelcome").textContent=`Good day, ${n} 👋`;
+  loadAnnouncementTeacher();
+  loadSavedResults();
+}
+function showStudent(){
+  document.getElementById("authSection").style.display="none";
+  document.getElementById("studentDash").style.display="flex";
+  const n=sessionStorage.getItem("username");
+  document.getElementById("sNameLabel").textContent=n;
+  document.getElementById("sWelcome").textContent=`Hello, ${n}!`;
+  loadStudentData(n);
+  loadAnnouncementStudent();
+}
+window.addEventListener("load",()=>{
+  if(sessionStorage.getItem("isLoggedIn")==="true"){
+    sessionStorage.getItem("role")==="teacher"?showTeacher():showStudent();
+  }
+});
+
+// ── Teacher nav ───────────────────────────────────────────────
+const TPAGES=["tHome","tInsights","tProgress","tAnnounce"];
+function tNav(id,el){
+  TPAGES.forEach(p=>document.getElementById(p).style.display="none");
+  document.getElementById(id).style.display="block";
+  document.querySelectorAll("#teacherDash .menu li").forEach(li=>li.classList.remove("active"));
+  if(el)el.classList.add("active");
+  if(id==="tProgress")loadProgressChart();
+}
+
+// ── Student nav ───────────────────────────────────────────────
+const SPAGES=["sHome","sProgress","sResources"];
+function sNav(id,el){
+  SPAGES.forEach(p=>document.getElementById(p).style.display="none");
+  document.getElementById(id).style.display="block";
+  document.querySelectorAll("#studentDash .menu li").forEach(li=>li.classList.remove("active"));
+  if(el)el.classList.add("active");
+}
+
+// ── Upload CSV ────────────────────────────────────────────────
+function uploadCSV(){
+  const file=document.getElementById("csvFile").files[0];
+  if(!file){alert("Select a CSV file");return;}
+  showLoader("Running ML analysis…");
+  const fd=new FormData();fd.append("file",file);
+  fetch(`${BASE_URL}/upload`,{method:"POST",body:fd})
+  .then(r=>r.json()).then(data=>{
+    hideLoader();
+    if(data.error){document.getElementById("status").textContent="❌ "+data.error;return;}
+    document.getElementById("status").textContent=`✅ Done — ${data.total_students} students processed`;
+    globalStudents=data.students||[];
+    globalStudentsDetail=data.students_detail||[];
+    globalClassAvg=data.class_avg||{};
+    document.getElementById("mlStats").style.display="block";
+    document.getElementById("silVal").textContent=data.silhouette??"-";
+    document.getElementById("accVal").textContent=data.dt_accuracy?data.dt_accuracy+"%":"-";
+    document.getElementById("totalVal").textContent=data.total_students;
+    showClassChart(data.counts||{});
+    if(data.cluster_profile)showClusterChart(data.cluster_profile);
+    updateTeacherHome(data);
+    fillDropdown();
+    document.getElementById("csvFile").value="";
+  }).catch(e=>{hideLoader();document.getElementById("status").textContent="❌ "+e.message;});
+}
+
+// ── Load saved results on login ───────────────────────────────
+function loadSavedResults(){
+  fetch(`${BASE_URL}/get_results`).then(r=>r.json()).then(data=>{
+    if(!data.total_students)return;
+    globalStudents=data.students||[];
+    globalStudentsDetail=data.students_detail||[];
+    globalClassAvg=data.class_avg||{};
+    updateTeacherHome(data);
+    fillDropdown();
+    document.getElementById("mlStats").style.display="block";
+    document.getElementById("silVal").textContent=data.silhouette??"-";
+    document.getElementById("accVal").textContent=data.dt_accuracy?data.dt_accuracy+"%":"-";
+    document.getElementById("totalVal").textContent=data.total_students;
+    showClassChart(data.counts||{});
+    if(data.cluster_profile)showClusterChart(data.cluster_profile);
+  }).catch(()=>{});
+}
+
+// ── Teacher home cards ────────────────────────────────────────
+function updateTeacherHome(data){
+  const c=data.counts||{};
+  document.getElementById("tTotal").textContent=data.total_students||"—";
+  document.getElementById("tStrong").textContent=c.Strong||0;
+  document.getElementById("tAvg").textContent=c.Average||0;
+  document.getElementById("tWeak").textContent=c.Weak||0;
+  const a=data.class_avg||{};
+  document.getElementById("avgAtt").textContent=a.attendance?a.attendance+"%":"—";
+  document.getElementById("avgAsg").textContent=a.assignment?a.assignment+"%":"—";
+  document.getElementById("avgTest").textContent=a.test||"—";
+  document.getElementById("avgPart").textContent=a.participation||"—";
+  const ul=document.getElementById("tWeakList");ul.innerHTML="";
+  (data.weak_students||[]).forEach(n=>{ul.innerHTML+=`<li><span class="lb-name">${n}</span><span class="lb-cat badge-weak">Weak</span></li>`;});
+  if(!(data.weak_students||[]).length)ul.innerHTML="<li style='color:#22c55e;font-size:13px;'>No at-risk students 🎉</li>";
+  const sorted=[...(data.students_detail||[])].sort((a,b)=>b.test-a.test).slice(0,10);
+  buildLeaderboard("tLeaderboard",sorted);
+}
+
+function buildLeaderboard(id,sorted){
+  const ul=document.getElementById(id);if(!ul)return;ul.innerHTML="";
+  sorted.forEach((s,i)=>{
+    const cls=s.category==="Strong"?"badge-strong":s.category==="Weak"?"badge-weak":"badge-average";
+    const m=i===0?"🥇":i===1?"🥈":i===2?"🥉":`#${i+1}`;
+    ul.innerHTML+=`<li><span class="lb-rank">${m}</span><span class="lb-name">${s.id}</span><span class="lb-score" style="color:#38bdf8;">${s.test}</span><span class="lb-cat ${cls}">${s.category}</span></li>`;
+  });
+  if(!sorted.length)ul.innerHTML="<li style='color:#475569;font-size:13px;'>No data</li>";
+}
+
+// ── Charts ────────────────────────────────────────────────────
+function showClassChart(counts){
+  const ctx=document.getElementById("classChart");if(!ctx)return;
+  if(classChart)classChart.destroy();
+  classChart=new Chart(ctx,{type:"pie",data:{labels:["Weak","Average","Strong"],datasets:[{data:[counts.Weak||0,counts.Average||0,counts.Strong||0],backgroundColor:["#991b1b","#1e3a8a","#166534"],borderColor:"#0f172a",borderWidth:4,hoverOffset:12}]},options:{responsive:true,plugins:{legend:{labels:{color:"#e5e7eb",font:{size:13,weight:"bold"}}},tooltip:{callbacks:{label(c){const t=c.dataset.data.reduce((a,b)=>a+b,0);return `${c.label}: ${c.raw} (${((c.raw/t)*100).toFixed(1)}%)`;}}}}}});
+}
+function showClusterChart(profile){
+  const ctx=document.getElementById("clusterChart");if(!ctx)return;
+  if(clusterChart)clusterChart.destroy();
+  const keys=["Attendance_Percentage","Assignment_Submission_Rate","Average_Test_Score","Participation_Score"];
+  const labels=["Attendance","Assignment","Test Score","Participation"];
+  const colors={Strong:"#22c55e",Average:"#3b82f6",Weak:"#ef4444"};
+  clusterChart=new Chart(ctx,{type:"bar",data:{labels,datasets:profile.map(cat=>({label:cat.Category,data:keys.map(k=>cat[k]),backgroundColor:(colors[cat.Category]||"#94a3b8")+"99",borderColor:colors[cat.Category]||"#94a3b8",borderWidth:2}))},options:{responsive:true,scales:{y:{beginAtZero:true,max:100,ticks:{color:"#94a3b8"}},x:{ticks:{color:"#94a3b8"}}},plugins:{legend:{labels:{color:"#e2e8f0"}}}}});
+}
+
+// ── Predict ───────────────────────────────────────────────────
+function predict(){
+  const att=parseFloat(document.getElementById("att").value);
+  const asg=parseFloat(document.getElementById("asg").value);
+  const test=parseFloat(document.getElementById("test").value);
+  const part=parseFloat(document.getElementById("part").value);
+  if([att,asg,test,part].some(isNaN)){alert("Fill all fields");return;}
+  fetch(`${BASE_URL}/predict`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({attendance:att,assignment:asg,test,participation:part})})
+  .then(r=>r.json()).then(data=>{
+    const res=data.result||"Unknown";
+    document.getElementById("predictResult").style.display="block";
+    const lbl=document.getElementById("predictLabel");
+    lbl.textContent=res;lbl.style.color=res==="Strong"?"#22c55e":res==="Average"?"#3b82f6":"#ef4444";
+    document.getElementById("predictAvg").textContent=`Average: ${data.average}`;
+  }).catch(()=>{
+    const avg=(att+asg+test+part)/4;const res=avg>=75?"Strong":avg>=50?"Average":"Weak";
+    document.getElementById("predictResult").style.display="block";
+    const lbl=document.getElementById("predictLabel");
+    lbl.textContent=res;lbl.style.color=res==="Strong"?"#22c55e":res==="Average"?"#3b82f6":"#ef4444";
+    document.getElementById("predictAvg").textContent=`Average: ${avg.toFixed(1)} (offline)`;
+  });
+}
+
+// ── Progress (Teacher) ────────────────────────────────────────
+function fillDropdown(){
+  const dd=document.getElementById("studentSelect");if(!dd)return;
+  dd.innerHTML=`<option value="">Select Student</option>`;
+  globalStudents.forEach(n=>{dd.innerHTML+=`<option value="${n}">${n}</option>`;});
+}
+function saveProgress(){
+  const student=document.getElementById("studentSelect").value;
+  const math=Number(document.getElementById("math").value);
+  const dbms=Number(document.getElementById("dbms").value);
+  const os=Number(document.getElementById("os").value);
+  if(!student){alert("Select a student");return;}
+  if([math,dbms,os].some(isNaN)){alert("Fill all score fields");return;}
+  const detail=globalStudentsDetail.find(s=>s.id===student);
+  const cat=detail?detail.category:"N/A";
+  document.getElementById("progressStudentCategory").textContent=`ML Category: ${cat}`;
+  localStorage.setItem("progressData",JSON.stringify({student,math,dbms,os}));
+  buildProgressChart("progressChart",{student,math,dbms,os});
+}
+function loadProgressChart(){
+  const stored=JSON.parse(localStorage.getItem("progressData"));
+  if(stored)buildProgressChart("progressChart",stored);
+}
+function buildProgressChart(canvasId,data){
+  const ctx=document.getElementById(canvasId);if(!ctx)return;
+  if(progressChart){progressChart.destroy();progressChart=null;}
+  progressChart=new Chart(ctx,{type:"bar",data:{labels:["Math","DBMS","OS"],datasets:[{label:data.student||"Student",data:[data.math,data.dbms,data.os],backgroundColor:["#3b82f6aa","#22c55eaa","#a855f7aa"],borderColor:["#3b82f6","#22c55e","#a855f7"],borderWidth:2}]},options:{responsive:true,scales:{y:{beginAtZero:true,max:100,ticks:{color:"#94a3b8"}},x:{ticks:{color:"#94a3b8"}}},plugins:{legend:{labels:{color:"#e2e8f0"}}}}});
+}
+
+// ── Announcements ─────────────────────────────────────────────
+function postAnnouncement(){
+  const text=document.getElementById("announceText").value.trim();
+  const msg=document.getElementById("announceMsg");
+  if(!text){msg.textContent="Write something first";msg.style.color="#facc15";return;}
+  localStorage.setItem("announcement",text);
+  document.getElementById("currentAnnounce").textContent=text;
+  msg.textContent="✅ Posted!";msg.style.color="#22c55e";
+}
+function clearAnnouncement(){
+  localStorage.removeItem("announcement");
+  document.getElementById("currentAnnounce").textContent="No announcement posted yet.";
+  document.getElementById("announceText").value="";
+  document.getElementById("announceMsg").textContent="Cleared.";document.getElementById("announceMsg").style.color="#64748b";
+}
+function loadAnnouncementTeacher(){
+  const a=localStorage.getItem("announcement");
+  if(a)document.getElementById("currentAnnounce").textContent=a;
+}
+function loadAnnouncementStudent(){
+  const a=localStorage.getItem("announcement");
+  if(a){document.getElementById("sNoticeBanner").style.display="flex";document.getElementById("sNoticeText").textContent=a;}
+}
+
+// ── Student data ──────────────────────────────────────────────
+function loadStudentData(username){
+  fetch(`${BASE_URL}/student_data`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username})})
+  .then(r=>r.json()).then(data=>{
+    if(!data.found){document.getElementById("sSubtitle").textContent="Your teacher hasn't published class results yet.";return;}
+    const s=data.data;
+    document.getElementById("sSubtitle").textContent="Here's your performance this semester.";
+    document.getElementById("sAtt").textContent=s.attendance??"-";
+    document.getElementById("sAsg").textContent=s.assignment??"-";
+    document.getElementById("sTest").textContent=s.test??"-";
+    document.getElementById("sPart").textContent=s.participation??"-";
+    const cat=s.category||"Unknown";
+    const cls=cat==="Strong"?"badge-strong":cat==="Weak"?"badge-weak":cat==="Average"?"badge-average":"badge-unknown";
+    document.getElementById("sCatBadge").innerHTML=`<span class="category-badge ${cls}">${cat} Performer</span>`;
+    fetch(`${BASE_URL}/get_results`).then(r=>r.json()).then(results=>{
+      buildCompareChart(s,results.class_avg||{});
+      const sorted=[...(results.students_detail||[])].sort((a,b)=>b.test-a.test).slice(0,10);
+      buildLeaderboard("sLeaderboard",sorted);
+    }).catch(()=>{});
+  }).catch(()=>{});
+}
+function buildCompareChart(student,classAvg){
+  const ctx=document.getElementById("sCompareChart");if(!ctx)return;
+  if(sCompareChart)sCompareChart.destroy();
+  sCompareChart=new Chart(ctx,{type:"bar",data:{labels:["Attendance","Assignment","Test Score","Participation"],datasets:[{label:"You",data:[student.attendance,student.assignment,student.test,student.participation],backgroundColor:"#38bdf8aa",borderColor:"#38bdf8",borderWidth:2},{label:"Class Avg",data:[classAvg.attendance,classAvg.assignment,classAvg.test,classAvg.participation],backgroundColor:"#64748baa",borderColor:"#64748b",borderWidth:2}]},options:{responsive:true,scales:{y:{beginAtZero:true,max:100,ticks:{color:"#94a3b8"}},x:{ticks:{color:"#94a3b8"}}},plugins:{legend:{labels:{color:"#e2e8f0"}}}}});
+}
+
+// ── Student progress ──────────────────────────────────────────
+function saveStudentProgress(){
+  const math=Number(document.getElementById("sMath").value);
+  const dbms=Number(document.getElementById("sDbms").value);
+  const os=Number(document.getElementById("sOs").value);
+  const net=Number(document.getElementById("sNet").value);
+  localStorage.setItem("studentProgress",JSON.stringify({math,dbms,os,net}));
+  if(sProgressChart){sProgressChart.destroy();sProgressChart=null;}
+  const ctx=document.getElementById("sProgressChart");
+  sProgressChart=new Chart(ctx,{type:"bar",data:{labels:["Math","DBMS","OS","Networking"],datasets:[{label:"My Scores",data:[math,dbms,os,net],backgroundColor:["#3b82f6aa","#22c55eaa","#a855f7aa","#f97316aa"],borderColor:["#3b82f6","#22c55e","#a855f7","#f97316"],borderWidth:2}]},options:{responsive:true,scales:{y:{beginAtZero:true,max:100,ticks:{color:"#94a3b8"}},x:{ticks:{color:"#94a3b8"}}},plugins:{legend:{labels:{color:"#e2e8f0"}}}}});
+}
+
+// ── Loader ────────────────────────────────────────────────────
+function showLoader(msg="Processing…"){document.getElementById("loader").style.display="flex";document.getElementById("loaderMsg").textContent=msg;}
+function hideLoader(){document.getElementById("loader").style.display="none";}
+</script>
+</body>
+</html>
