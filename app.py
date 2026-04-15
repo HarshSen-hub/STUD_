@@ -20,7 +20,7 @@ app.register_blueprint(student_bp)
 # ── Static files & Home ───────────────────────────────────────
 @app.route("/")
 def home():
-    return send_from_directory("templates/student", "index.html")
+    return render_template("index.html")
     
 @app.route("/<path:filename>")
 def static_files(filename):
