@@ -22,9 +22,7 @@ app.register_blueprint(student_bp)
 def home():
     return render_template("index.html")
     
-@app.route("/<path:filename>")
-def static_files(filename):
-    return send_from_directory(".", filename)
+
 
 # Important: Student Login Page Route
 @app.route('/student/login')
