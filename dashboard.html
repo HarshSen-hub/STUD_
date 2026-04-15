@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InsightX — My Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0f1117; font-family: 'Segoe UI', system-ui, sans-serif; color: #e2e8f0; min-height: 100vh; }
+
+    /* Navbar */
+    nav {
+      background: #1a1d27; border-bottom: 1px solid #2d3148;
+      padding: 0 2rem; height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #f1f5f9; }
+    .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: #38bdf8; }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .nav-name { font-size: 13px; color: #94a3b8; }
+    .btn-logout {
+      background: transparent; border: 1px solid #2d3148;
+      border-radius: 8px; padding: 6px 14px; font-size: 13px;
+      color: #64748b; cursor: pointer; text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-logout:hover { border-color: #e24b4b; color: #e24b4b; }
+
+    /* Layout */
+    .page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+    /* Cluster banner */
+    .cluster-banner {
+      border-radius: 14px; padding: 1.4rem 1.8rem;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
+    }
+    .cluster-banner.strong { background: #0f2d1f; border: 1px solid #166534; }
+    .cluster-banner.average { background: #2d2310; border: 1px solid #854d0e; }
+    .cluster-banner.weak { background: #2d1010; border: 1px solid #7f1d1d; }
+
+    .cluster-label { font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
+    .cluster-value { font-size: 22px; font-weight: 700; }
+    .cluster-banner.strong .cluster-value { color: #4ade80; }
+    .cluster-banner.average .cluster-value { color: #fbbf24; }
+    .cluster-banner.weak .cluster-value { color: #f87171; }
+
+    .cluster-desc { font-size: 13px; color: #94a3b8; max-width: 420px; }
+
+    .percentile-pill {
+      background: #1e2535; border: 1px solid #2d3a50;
+      border-radius: 99px; padding: 6px 16px;
+      font-size: 13px; color: #38bdf8; font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Metric grid */
+    .metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-bottom: 1.5rem; }
+    .metric-card {
+      background: #1a1d27; border: 1px solid #2d3148;
+      border-radius: 12px; padding: 1.2rem;
+    }
+    .metric-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .metric-name { font-size: 12px; color: #64748b; }
+    .metric-icon { font-size: 16px; }
+    .metric-val { font-size: 28px; font-weight: 700; color: #f1f5f9; line-height: 1; }
+    .metric-unit { font-size: 12px; color: #475569; margin-top: 2px; }
+    .metric-compare { font-size: 11px; color: #475569; margin-top: 8px; }
+    .metric-compare span { color: #38bdf8; }
+
+    /* Stat bar */
+    .stat-bar-wrap { margin-top: 8px; background: #0f1117; border-radius: 99px; height: 5px; overflow: hidden; }
+    .stat-bar { height: 100%; border-radius: 99px; transition: width 1s ease; }
+
+    /* Charts row */
+    .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 1.5rem; }
+    .chart-card {
+      background: #1a1d27; border: 1px solid #2d3148;
+      border-radius: 12px; padding: 1.2rem;
+    }
+    .card-title { font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; }
+
+    /* Announcements */
+    .announce-card {
+      background: #1a1d27; border: 1px solid #2d3148;
+      border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem;
+    }
+    .announce-item {
+      border-bottom: 1px solid #2d3148; padding: 10px 0;
+    }
+    .announce-item:last-child { border-bottom: none; }
+    .announce-title { font-size: 14px; color: #e2e8f0; font-weight: 500; }
+    .announce-meta { font-size: 12px; color: #475569; margin-top: 3px; }
+    .no-announce { font-size: 13px; color: #475569; padding: 0.5rem 0; }
+
+    @media (max-width: 700px) {
+      .metric-grid { grid-template-columns: 1fr 1fr; }
+      .charts-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 420px) {
+      .metric-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="nav-dot"></div>
+    InsightX
+  </div>
+  <div class="nav-right">
+    <span class="nav-name">🎓 {{ student.name }}</span>
+    <a href="/student/logout" class="btn-logout">Logout</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- Cluster Banner -->
+  {% set cluster_lower = student.cluster | lower %}
+  <div class="cluster-banner {{ cluster_lower }}">
+    <div>
+      <p class="cluster-label">Your Performance Cluster</p>
+      <p class="cluster-value">{{ student.cluster }} Performer</p>
+      <p class="cluster-desc">
+        {% if cluster_lower == 'strong' %}
+          You're in the top group! Keep up the excellent work across all metrics.
+        {% elif cluster_lower == 'average' %}
+          You're performing steadily. A little push in test scores and attendance can move you up!
+        {% else %}
+          You need some support. Focus on attendance and assignment submissions to improve.
+        {% endif %}
+      </p>
+    </div>
+    <div class="percentile-pill">Top {{ 100 - student.percentile }}% of class</div>
+  </div>
+
+  <!-- Metric Cards -->
+  <div class="metric-grid">
+
+    <div class="metric-card">
+      <div class="metric-top">
+        <span class="metric-name">Attendance</span>
+        <span class="metric-icon">📅</span>
+      </div>
+      <div class="metric-val">{{ student.attendance_percentage | round(1) }}<span style="font-size:16px;color:#475569;">%</span></div>
+      <div class="stat-bar-wrap">
+        <div class="stat-bar" style="width:{{ student.attendance_percentage }}%;background:#0ea5e9;"></div>
+      </div>
+      <div class="metric-compare">Class avg: <span>{{ student.class_avg_attendance }}%</span></div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-top">
+        <span class="metric-name">Assignment Submission</span>
+        <span class="metric-icon">📝</span>
+      </div>
+      <div class="metric-val">{{ student.assignment_submission_rate | round(1) }}<span style="font-size:16px;color:#475569;">%</span></div>
+      <div class="stat-bar-wrap">
+        <div class="stat-bar" style="width:{{ student.assignment_submission_rate }}%;background:#a855f7;"></div>
+      </div>
+      <div class="metric-compare">Class avg: <span>{{ student.class_avg_assignment }}%</span></div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-top">
+        <span class="metric-name">Avg Test Score</span>
+        <span class="metric-icon">🏆</span>
+      </div>
+      <div class="metric-val">{{ student.avg_test_score | round(1) }}<span style="font-size:16px;color:#475569;">/100</span></div>
+      <div class="stat-bar-wrap">
+        <div class="stat-bar" style="width:{{ student.avg_test_score }}%;background:#22c55e;"></div>
+      </div>
+      <div class="metric-compare">Class avg: <span>{{ student.class_avg_test }}</span></div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-top">
+        <span class="metric-name">Participation</span>
+        <span class="metric-icon">🙋</span>
+      </div>
+      <div class="metric-val">{{ student.participation_score | round(1) }}<span style="font-size:16px;color:#475569;">/100</span></div>
+      <div class="stat-bar-wrap">
+        <div class="stat-bar" style="width:{{ student.participation_score }}%;background:#f97316;"></div>
+      </div>
+      <div class="metric-compare">Class avg: <span>{{ student.class_avg_participation }}</span></div>
+    </div>
+
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <p class="card-title">Your scores vs class average</p>
+      <div style="position:relative;height:220px;">
+        <canvas id="compareChart" role="img" aria-label="Bar chart comparing your scores to class averages across all metrics"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <p class="card-title">Performance radar</p>
+      <div style="position:relative;height:220px;">
+        <canvas id="radarChart" role="img" aria-label="Radar chart showing performance across all four metrics"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Announcements -->
+  <div class="announce-card">
+    <p class="card-title">📢 Announcements from Teacher</p>
+    {% if announcements %}
+      {% for a in announcements %}
+        <div class="announce-item">
+          <p class="announce-title">{{ a.title }}</p>
+          <p class="announce-meta">{{ a.message }} &nbsp;·&nbsp; {{ a.date }}</p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="no-announce">No announcements yet.</p>
+    {% endif %}
+  </div>
+
+</div>
+
+<script>
+  const studentData = {
+    attendance: {{ student.attendance_percentage | round(1) }},
+    assignment: {{ student.assignment_submission_rate | round(1) }},
+    test: {{ student.avg_test_score | round(1) }},
+    participation: {{ student.participation_score | round(1) }},
+    classAttendance: {{ student.class_avg_attendance }},
+    classAssignment: {{ student.class_avg_assignment }},
+    classTest: {{ student.class_avg_test }},
+    classParticipation: {{ student.class_avg_participation }},
+  };
+
+  // Grouped bar chart
+  new Chart(document.getElementById('compareChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Attendance', 'Assignment', 'Test Score', 'Participation'],
+      datasets: [
+        {
+          label: 'You',
+          data: [studentData.attendance, studentData.assignment, studentData.test, studentData.participation],
+          backgroundColor: '#0ea5e9',
+          borderRadius: 5,
+        },
+        {
+          label: 'Class Avg',
+          data: [studentData.classAttendance, studentData.classAssignment, studentData.classTest, studentData.classParticipation],
+          backgroundColor: '#2d3148',
+          borderRadius: 5,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { color: '#475569', font: { size: 11 } }, grid: { color: '#1e2535' } },
+        y: { ticks: { color: '#475569', font: { size: 11 } }, grid: { color: '#1e2535' }, max: 100 }
+      }
+    }
+  });
+
+  // Radar chart
+  new Chart(document.getElementById('radarChart'), {
+    type: 'radar',
+    data: {
+      labels: ['Attendance', 'Assignments', 'Test Score', 'Participation'],
+      datasets: [{
+        label: 'Your Profile',
+        data: [studentData.attendance, studentData.assignment, studentData.test, studentData.participation],
+        backgroundColor: 'rgba(14,165,233,0.15)',
+        borderColor: '#0ea5e9',
+        pointBackgroundColor: '#0ea5e9',
+        pointRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        r: {
+          min: 0, max: 100,
+          ticks: { color: '#475569', font: { size: 10 }, backdropColor: 'transparent', stepSize: 25 },
+          grid: { color: '#2d3148' },
+          pointLabels: { color: '#94a3b8', font: { size: 11 } }
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>

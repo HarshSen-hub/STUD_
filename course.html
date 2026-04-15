@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Registration</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<!--  IMPORTANT CHANGE HERE -->
+<body class="course-page">
+
+<div class="container">
+    <h2>Complete Your Profile</h2>
+
+    <form id="courseForm">
+
+        <!-- College -->
+        <input type="text" id="college" placeholder="College Name" required>
+
+        <!-- Course -->
+        <select id="course" required>
+            <option value="">Select Course</option>
+            <option>BCA</option>
+            <option>BTech</option>
+            <option>BBA</option>
+        </select>
+
+        <!-- Semester -->
+        <select id="semester" required>
+            <option value="">Select Semester</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+        </select>
+
+        <!-- Subjects -->
+        <div id="subjects">
+            <div class="subject-row">
+                <input type="text" name="subjects[]" placeholder="Enter Subject" required>
+                <button type="button" class="remove-btn" onclick="removeSubject(this)">X</button>
+            </div>
+        </div>
+
+        <button type="button" class="add-btn" onclick="addSubject()">+ Add Subject</button>
+
+        <button type="submit">Save & Continue</button>
+
+    </form>
+</div>
+
+<script>
+
+// ================= ADD SUBJECT =================
+function addSubject() {
+    let div = document.createElement("div");
+    div.classList.add("subject-row");
+
+    div.innerHTML = `
+        <input type="text" name="subjects[]" placeholder="Enter Subject" required>
+        <button type="button" class="remove-btn" onclick="removeSubject(this)">X</button>
+    `;
+
+    document.getElementById("subjects").appendChild(div);
+}
+
+// ================= REMOVE SUBJECT =================
+function removeSubject(btn) {
+    btn.parentElement.remove();
+}
+
+// ================= FORM SUBMIT =================
+document.getElementById("courseForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    // Collect data
+    let college = document.getElementById("college").value;
+    let course = document.getElementById("course").value;
+    let semester = document.getElementById("semester").value;
+
+    let subjects = [];
+    document.querySelectorAll("input[name='subjects[]']").forEach(input => {
+        subjects.push(input.value);
+    });
+
+    console.log({
+        college,
+        course,
+        semester,
+        subjects
+    });
+
+    // Mark profile completed
+    localStorage.setItem("isNewUser", "false");
+
+    alert("Profile Saved Successfully");
+
+    // Redirect to login
+    window.location.href = "index.html";
+});
+
+</script>
+
+</body>
+</html>
