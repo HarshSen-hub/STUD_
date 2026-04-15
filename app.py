@@ -193,4 +193,5 @@ if __name__ == "__main__":
     print("\n✅  InsightX running at http://127.0.0.1:5001")
     print("👩‍🏫  Teacher: username=teacher  password=teacher123")
     print("🎓  Student Login: /student/login  (use Student ID like S01)\n")
-    app.run(host="0.0.0.0", port=10000, debug=False)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port, debug=False)
