@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>InsightX</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     #loader{display:none;position:fixed;inset:0;background:rgba(2,6,23,.85);z-index:9999;justify-content:center;align-items:center;flex-direction:column;gap:14px;}
