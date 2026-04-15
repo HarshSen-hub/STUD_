@@ -190,8 +190,8 @@ def upload_file():
         return jsonify({"error": str(e)})
 
 if __name__ == "__main__":
-    print("\n✅  InsightX running at http://127.0.0.1:5001")
+    port = int(os.environ.get("PORT", 10000))
+    print("\n✅  InsightX running at http://127.0.0.1:" + str(port))
     print("👩‍🏫  Teacher: username=teacher  password=teacher123")
     print("🎓  Student Login: /student/login  (use Student ID like S01)\n")
-    port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port, debug=False)
