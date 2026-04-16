@@ -13,8 +13,6 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "insightx-secret-key-change-me-in-production")
 CORS(app)
 
-app.config['EXPLAIN_TEMPLATE_LOADING'] = True
-
 # ── Register Student Blueprint ─────────────────────────────────
 from student_routes import student_bp
 app.register_blueprint(student_bp)
