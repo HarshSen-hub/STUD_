@@ -1,0 +1,509 @@
+{
+  "message": "Analysis Complete",
+  "total_students": 50,
+  "counts": {
+    "Strong": 20,
+    "Average": 17,
+    "Weak": 13
+  },
+  "weak_students": [
+    "S04",
+    "S05",
+    "S08",
+    "S15",
+    "S19",
+    "S20",
+    "S24",
+    "S25",
+    "S30",
+    "S35",
+    "S40",
+    "S45",
+    "S50"
+  ],
+  "students": [
+    "S01",
+    "S02",
+    "S03",
+    "S04",
+    "S05",
+    "S06",
+    "S07",
+    "S08",
+    "S09",
+    "S10",
+    "S11",
+    "S12",
+    "S13",
+    "S14",
+    "S15",
+    "S16",
+    "S17",
+    "S18",
+    "S19",
+    "S20",
+    "S21",
+    "S22",
+    "S23",
+    "S24",
+    "S25",
+    "S26",
+    "S27",
+    "S28",
+    "S29",
+    "S30",
+    "S31",
+    "S32",
+    "S33",
+    "S34",
+    "S35",
+    "S36",
+    "S37",
+    "S38",
+    "S39",
+    "S40",
+    "S41",
+    "S42",
+    "S43",
+    "S44",
+    "S45",
+    "S46",
+    "S47",
+    "S48",
+    "S49",
+    "S50"
+  ],
+  "students_detail": [
+    {
+      "id": "S01",
+      "attendance": 92,
+      "assignment": 95,
+      "test": 88,
+      "participation": 90,
+      "category": "Strong"
+    },
+    {
+      "id": "S02",
+      "attendance": 85,
+      "assignment": 82,
+      "test": 80,
+      "participation": 78,
+      "category": "Strong"
+    },
+    {
+      "id": "S03",
+      "attendance": 78,
+      "assignment": 75,
+      "test": 70,
+      "participation": 72,
+      "category": "Average"
+    },
+    {
+      "id": "S04",
+      "attendance": 65,
+      "assignment": 60,
+      "test": 62,
+      "participation": 58,
+      "category": "Weak"
+    },
+    {
+      "id": "S05",
+      "attendance": 55,
+      "assignment": 50,
+      "test": 48,
+      "participation": 45,
+      "category": "Weak"
+    },
+    {
+      "id": "S06",
+      "attendance": 88,
+      "assignment": 90,
+      "test": 85,
+      "participation": 87,
+      "category": "Strong"
+    },
+    {
+      "id": "S07",
+      "attendance": 72,
+      "assignment": 70,
+      "test": 68,
+      "participation": 65,
+      "category": "Average"
+    },
+    {
+      "id": "S08",
+      "attendance": 60,
+      "assignment": 58,
+      "test": 55,
+      "participation": 52,
+      "category": "Weak"
+    },
+    {
+      "id": "S09",
+      "attendance": 95,
+      "assignment": 98,
+      "test": 92,
+      "participation": 94,
+      "category": "Strong"
+    },
+    {
+      "id": "S10",
+      "attendance": 82,
+      "assignment": 85,
+      "test": 80,
+      "participation": 83,
+      "category": "Strong"
+    },
+    {
+      "id": "S11",
+      "attendance": 90,
+      "assignment": 92,
+      "test": 86,
+      "participation": 88,
+      "category": "Strong"
+    },
+    {
+      "id": "S12",
+      "attendance": 84,
+      "assignment": 80,
+      "test": 78,
+      "participation": 75,
+      "category": "Strong"
+    },
+    {
+      "id": "S13",
+      "attendance": 76,
+      "assignment": 72,
+      "test": 69,
+      "participation": 70,
+      "category": "Average"
+    },
+    {
+      "id": "S14",
+      "attendance": 68,
+      "assignment": 65,
+      "test": 64,
+      "participation": 60,
+      "category": "Average"
+    },
+    {
+      "id": "S15",
+      "attendance": 58,
+      "assignment": 55,
+      "test": 50,
+      "participation": 48,
+      "category": "Weak"
+    },
+    {
+      "id": "S16",
+      "attendance": 91,
+      "assignment": 94,
+      "test": 89,
+      "participation": 91,
+      "category": "Strong"
+    },
+    {
+      "id": "S17",
+      "attendance": 83,
+      "assignment": 81,
+      "test": 79,
+      "participation": 77,
+      "category": "Strong"
+    },
+    {
+      "id": "S18",
+      "attendance": 75,
+      "assignment": 73,
+      "test": 71,
+      "participation": 69,
+      "category": "Average"
+    },
+    {
+      "id": "S19",
+      "attendance": 66,
+      "assignment": 62,
+      "test": 60,
+      "participation": 58,
+      "category": "Weak"
+    },
+    {
+      "id": "S20",
+      "attendance": 57,
+      "assignment": 53,
+      "test": 49,
+      "participation": 46,
+      "category": "Weak"
+    },
+    {
+      "id": "S21",
+      "attendance": 89,
+      "assignment": 91,
+      "test": 87,
+      "participation": 89,
+      "category": "Strong"
+    },
+    {
+      "id": "S22",
+      "attendance": 81,
+      "assignment": 79,
+      "test": 77,
+      "participation": 74,
+      "category": "Average"
+    },
+    {
+      "id": "S23",
+      "attendance": 74,
+      "assignment": 70,
+      "test": 68,
+      "participation": 67,
+      "category": "Average"
+    },
+    {
+      "id": "S24",
+      "attendance": 67,
+      "assignment": 63,
+      "test": 61,
+      "participation": 59,
+      "category": "Weak"
+    },
+    {
+      "id": "S25",
+      "attendance": 59,
+      "assignment": 54,
+      "test": 52,
+      "participation": 50,
+      "category": "Weak"
+    },
+    {
+      "id": "S26",
+      "attendance": 93,
+      "assignment": 96,
+      "test": 90,
+      "participation": 92,
+      "category": "Strong"
+    },
+    {
+      "id": "S27",
+      "attendance": 86,
+      "assignment": 84,
+      "test": 82,
+      "participation": 80,
+      "category": "Strong"
+    },
+    {
+      "id": "S28",
+      "attendance": 77,
+      "assignment": 74,
+      "test": 72,
+      "participation": 71,
+      "category": "Average"
+    },
+    {
+      "id": "S29",
+      "attendance": 69,
+      "assignment": 66,
+      "test": 63,
+      "participation": 61,
+      "category": "Average"
+    },
+    {
+      "id": "S30",
+      "attendance": 56,
+      "assignment": 52,
+      "test": 48,
+      "participation": 47,
+      "category": "Weak"
+    },
+    {
+      "id": "S31",
+      "attendance": 94,
+      "assignment": 97,
+      "test": 91,
+      "participation": 93,
+      "category": "Strong"
+    },
+    {
+      "id": "S32",
+      "attendance": 87,
+      "assignment": 85,
+      "test": 83,
+      "participation": 81,
+      "category": "Strong"
+    },
+    {
+      "id": "S33",
+      "attendance": 79,
+      "assignment": 76,
+      "test": 73,
+      "participation": 72,
+      "category": "Average"
+    },
+    {
+      "id": "S34",
+      "attendance": 70,
+      "assignment": 68,
+      "test": 65,
+      "participation": 63,
+      "category": "Average"
+    },
+    {
+      "id": "S35",
+      "attendance": 60,
+      "assignment": 57,
+      "test": 54,
+      "participation": 52,
+      "category": "Weak"
+    },
+    {
+      "id": "S36",
+      "attendance": 91,
+      "assignment": 93,
+      "test": 88,
+      "participation": 90,
+      "category": "Strong"
+    },
+    {
+      "id": "S37",
+      "attendance": 84,
+      "assignment": 82,
+      "test": 80,
+      "participation": 78,
+      "category": "Strong"
+    },
+    {
+      "id": "S38",
+      "attendance": 76,
+      "assignment": 73,
+      "test": 70,
+      "participation": 69,
+      "category": "Average"
+    },
+    {
+      "id": "S39",
+      "attendance": 68,
+      "assignment": 64,
+      "test": 62,
+      "participation": 60,
+      "category": "Average"
+    },
+    {
+      "id": "S40",
+      "attendance": 58,
+      "assignment": 55,
+      "test": 51,
+      "participation": 49,
+      "category": "Weak"
+    },
+    {
+      "id": "S41",
+      "attendance": 92,
+      "assignment": 95,
+      "test": 89,
+      "participation": 91,
+      "category": "Strong"
+    },
+    {
+      "id": "S42",
+      "attendance": 85,
+      "assignment": 83,
+      "test": 81,
+      "participation": 79,
+      "category": "Strong"
+    },
+    {
+      "id": "S43",
+      "attendance": 78,
+      "assignment": 75,
+      "test": 72,
+      "participation": 71,
+      "category": "Average"
+    },
+    {
+      "id": "S44",
+      "attendance": 69,
+      "assignment": 66,
+      "test": 64,
+      "participation": 62,
+      "category": "Average"
+    },
+    {
+      "id": "S45",
+      "attendance": 57,
+      "assignment": 53,
+      "test": 50,
+      "participation": 48,
+      "category": "Weak"
+    },
+    {
+      "id": "S46",
+      "attendance": 93,
+      "assignment": 96,
+      "test": 91,
+      "participation": 93,
+      "category": "Strong"
+    },
+    {
+      "id": "S47",
+      "attendance": 88,
+      "assignment": 86,
+      "test": 84,
+      "participation": 82,
+      "category": "Strong"
+    },
+    {
+      "id": "S48",
+      "attendance": 80,
+      "assignment": 77,
+      "test": 75,
+      "participation": 73,
+      "category": "Average"
+    },
+    {
+      "id": "S49",
+      "attendance": 71,
+      "assignment": 68,
+      "test": 66,
+      "participation": 64,
+      "category": "Average"
+    },
+    {
+      "id": "S50",
+      "attendance": 62,
+      "assignment": 59,
+      "test": 56,
+      "participation": 54,
+      "category": "Weak"
+    }
+  ],
+  "cluster_profile": [
+    {
+      "Category": "Average",
+      "Attendance_Percentage": 74.18,
+      "Assignment_Submission_Rate": 71.24,
+      "Average_Test_Score": 68.76,
+      "Participation_Score": 67.24
+    },
+    {
+      "Category": "Strong",
+      "Attendance_Percentage": 88.6,
+      "Assignment_Submission_Rate": 89.25,
+      "Average_Test_Score": 85.15,
+      "Participation_Score": 85.55
+    },
+    {
+      "Category": "Weak",
+      "Attendance_Percentage": 60.0,
+      "Assignment_Submission_Rate": 56.23,
+      "Average_Test_Score": 53.54,
+      "Participation_Score": 51.23
+    }
+  ],
+  "dt_accuracy": 100.0,
+  "silhouette": 0.564,
+  "class_avg": {
+    "attendance": 76.3,
+    "assignment": 74.5,
+    "test": 71.4,
+    "participation": 70.4
+  }
+}
