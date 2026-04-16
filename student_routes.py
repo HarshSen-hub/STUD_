@@ -3,12 +3,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 import os
 import pandas as pd
 
-student_bp = Blueprint(
-    "student",
-    __name__,
-    url_prefix="/student",
-    template_folder="templates",
-)
+student_bp = Blueprint('student', __name__, url_prefix='/student', template_folder='templates')
+
 
 DATA_FILE = os.path.join("uploads", "student_data.csv")
 SAMPLE_FILE = "sample_student_behavior_data.csv"
