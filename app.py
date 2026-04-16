@@ -14,8 +14,9 @@ app.secret_key = os.environ.get("SECRET_KEY", "insightx-secret-key-change-me-in-
 CORS(app)
 
 # ── Register Student Blueprint ─────────────────────────────────
-from student_routes import student_bp
+from student_routes import student_bp, get_student_record
 app.register_blueprint(student_bp)
+
 
 # ── File helpers ──────────────────────────────────────────────
 USERS_FILE   = "users.json"
