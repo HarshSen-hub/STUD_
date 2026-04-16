@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InsightX — Student Login</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: #0f1117;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #e2e8f0;
+    }
+
+    .card {
+      background: #1a1d27;
+      border: 1px solid #2d3148;
+      border-radius: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 860px;
+      width: 92%;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    }
+
+    /* Left panel */
+    .left {
+      background: linear-gradient(145deg, #131629 0%, #1a1f38 100%);
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; margin-bottom: 2rem; }
+    .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: #38bdf8; }
+    .logo-text { font-size: 22px; font-weight: 700; color: #f1f5f9; }
+
+    .illustration {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 180px;
+    }
+    .illustration svg { width: 140px; height: 140px; }
+
+    .tagline { font-size: 13px; color: #64748b; margin-bottom: 1.5rem; }
+
+    .stats { display: flex; gap: 1.5rem; }
+    .stat span:first-child { display: block; font-size: 18px; font-weight: 700; color: #38bdf8; }
+    .stat span:last-child { font-size: 11px; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* Right panel */
+    .right { padding: 2.5rem 2.5rem; display: flex; flex-direction: column; justify-content: center; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #1e2535; border: 1px solid #2d3a50;
+      border-radius: 99px; padding: 4px 12px;
+      font-size: 11px; color: #94a3b8;
+      margin-bottom: 1.5rem; width: fit-content;
+    }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+
+    .welcome { font-size: 26px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
+    .sub { font-size: 14px; color: #64748b; margin-bottom: 2rem; }
+
+    .role-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 1.5rem; }
+    .role-tab {
+      padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 500;
+      border: 1px solid #2d3148; cursor: pointer; text-align: center;
+      color: #64748b; background: transparent; text-decoration: none; display: block;
+    }
+    .role-tab.active { background: #1e3a5f; border-color: #38bdf8; color: #38bdf8; }
+    .role-tab:hover:not(.active) { border-color: #3d4460; color: #94a3b8; }
+
+    label { display: block; font-size: 12px; color: #64748b; margin-bottom: 6px; }
+    input {
+      width: 100%; background: #0f1117; border: 1px solid #2d3148;
+      border-radius: 10px; padding: 11px 14px; font-size: 14px;
+      color: #e2e8f0; outline: none; margin-bottom: 1rem;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #38bdf8; }
+    input::placeholder { color: #3d4460; }
+
+    .btn-login {
+      width: 100%; padding: 12px;
+      background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+      border: none; border-radius: 10px;
+      font-size: 15px; font-weight: 600; color: #fff;
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn-login:hover { opacity: 0.88; }
+
+    .divider { display: flex; align-items: center; gap: 10px; margin: 1.2rem 0; color: #3d4460; font-size: 12px; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #2d3148; }
+
+    .btn-teacher {
+      width: 100%; padding: 11px;
+      background: transparent; border: 1px solid #2d3148;
+      border-radius: 10px; font-size: 14px; color: #64748b;
+      cursor: pointer; text-align: center; text-decoration: none;
+      display: block; transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-teacher:hover { border-color: #3d4460; color: #94a3b8; }
+
+    .flash-error {
+      background: #2d1a1a; border: 1px solid #7f1d1d;
+      border-radius: 8px; padding: 9px 14px;
+      font-size: 13px; color: #fca5a5; margin-bottom: 1rem;
+    }
+
+    .hint { font-size: 11px; color: #475569; margin-top: 1.2rem; text-align: center; }
+
+    @media (max-width: 600px) {
+      .card { grid-template-columns: 1fr; }
+      .left { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <!-- Left -->
+  <div class="left">
+    <div>
+      <div class="logo">
+        <div class="logo-dot"></div>
+        <span class="logo-text">InsightX</span>
+      </div>
+    </div>
+    <div class="illustration">
+      <!-- Simple analytics illustration -->
+      <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="80" width="20" height="45" rx="3" fill="#0ea5e9" opacity="0.8"/>
+        <rect x="40" y="55" width="20" height="70" rx="3" fill="#38bdf8" opacity="0.8"/>
+        <rect x="70" y="65" width="20" height="60" rx="3" fill="#0ea5e9" opacity="0.6"/>
+        <rect x="100" y="35" width="20" height="90" rx="3" fill="#0284c7"/>
+        <circle cx="20" cy="78" r="4" fill="#f97316"/>
+        <circle cx="50" cy="53" r="4" fill="#f97316"/>
+        <circle cx="80" cy="63" r="4" fill="#f97316"/>
+        <circle cx="110" cy="33" r="4" fill="#f97316"/>
+        <polyline points="20,78 50,53 80,63 110,33" stroke="#f97316" stroke-width="2" fill="none"/>
+        <rect x="5" y="10" width="55" height="30" rx="6" fill="#1e3a5f"/>
+        <text x="17" y="30" font-size="14" font-weight="bold" fill="#38bdf8">98%</text>
+      </svg>
+    </div>
+    <div>
+      <p class="tagline">Smart insights for smarter learning</p>
+      <div class="stats">
+        <div class="stat"><span>98%</span><span>Accuracy</span></div>
+        <div class="stat"><span>ML</span><span>Powered</span></div>
+        <div class="stat"><span>2-in-1</span><span>Portal</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right -->
+  <div class="right">
+    <div class="badge"><div class="badge-dot"></div> SIGN IN</div>
+    <p class="welcome">Welcome back</p>
+    <p class="sub">Select your role and sign in</p>
+
+    <div class="role-tabs">
+      <a href="/login" class="role-tab">👨‍🏫 Teacher</a>
+      <a href="/student/login" class="role-tab active">🎓 Student</a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash-error">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+      <div>
+        <label>Student ID</label>
+        <input type="text" name="student_id" placeholder="Enter your student ID" required autocomplete="off"/>
+      </div>
+      <div>
+        <label>Full Name (used as password)</label>
+        <input type="text" name="name" placeholder="Enter your full name" required autocomplete="off"/>
+      </div>
+      <button type="submit" class="btn-login">Log In</button>
+    </form>
+
+    <div class="divider">or</div>
+    <a href="/login" class="btn-teacher">Sign in as Teacher instead</a>
+
+    <p class="hint">Your credentials are your Student ID + your registered full name</p>
+  </div>
+
+</div>
+</body>
+</html>
