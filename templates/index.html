@@ -453,7 +453,7 @@ function validateLogin() {
     const pass = document.getElementById("password").value.trim();
     if (!user || !pass) { msg.textContent = "Fill all fields"; msg.style.color = "#facc15"; return; }
     msg.textContent = "Authenticating…"; msg.style.color = "#38bdf8";
-    fetch(`${BASE_URL}/login`, {
+    fetch(`${BASE_URL}/student/login`, {
       method: "POST", headers: {"Content-Type":"application/json"},
       body: JSON.stringify({username:user, password:pass})
     })
@@ -477,7 +477,7 @@ function validateLogin() {
     const sid = document.getElementById("studentId").value.trim();
     if (!sid) { msg.textContent = "Enter your Student ID"; msg.style.color = "#facc15"; return; }
     msg.textContent = "Looking you up…"; msg.style.color = "#38bdf8";
-    fetch(`${BASE_URL}/student_login`, {
+   fetch(`${BASE_URL}/student/login`, {
       method: "POST", headers: {"Content-Type":"application/json"},
       body: JSON.stringify({student_id: sid})
     })
