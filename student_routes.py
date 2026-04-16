@@ -1,10 +1,10 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+ from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 import pandas as pd
 import os
 
 student_bp = Blueprint('student', __name__,
                        url_prefix='/student',
-                       template_folder='../templates')   # ← Changed to ../templates   
+                       template_folder='templates')
 
 DATA_FILE = os.path.join('uploads', 'student_data.csv')
 SAMPLE_FILE = 'sample_student_behavior_data.csv'
@@ -114,7 +114,7 @@ def dashboard():
         flash('Session expired. Please login again.', 'error')
         return redirect(url_for('student.login'))
 
-    return render_template('dashboard.html', student=student, announcements=[])  # remove student/ prefix
+    return render_template('student/dashboard.html', student=student, announcements=[])
 
 
 # ── Student Logout ─────────────────────────────────────────────
